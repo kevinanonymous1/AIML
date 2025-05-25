@@ -1,0 +1,78 @@
+# 📌 Step 1 Import Libraries
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.cluster import KMeans
+from sklearn.preprocessing import MinMaxScaler
+
+# 📌 Step 2 Load the Dataset
+df = pd.read_csv(FAIMLincome.csv)  # Change path if needed
+print(Original Data)
+print(df.head())
+
+# 📌 Step 3 Initial Visualization (Unclustered)
+plt.figure(figsize=(6, 4))
+plt.scatter(df['age'], df['income'])
+plt.xlabel('Age')
+plt.ylabel('Income')
+plt.title('Raw Data - Age vs Income')
+plt.show()
+
+# 📌 Step 4 Apply K-Means (Unscaled Data)
+kmean = KMeans(n_clusters=3)
+y_predict = kmean.fit_predict(df[['age', 'income']])
+df['cluster'] = y_predict
+
+# 📌 Step 5 Visualize Clusters (Unscaled)
+plt.figure(figsize=(6, 4))
+for i in range(3)
+    plt.scatter(df[df.cluster == i]['age'], df[df.cluster == i]['income'], label=f'Cluster {i}')
+plt.xlabel('Age')
+plt.ylabel('Income')
+plt.title('Clusters on Unscaled Data')
+plt.legend()
+plt.show()
+
+# 📌 Step 6 Scale the Data (MinMax Scaling)
+scaler = MinMaxScaler()
+df['AGE'] = scaler.fit_transform(df[['age']])
+df['INCOME'] = scaler.fit_transform(df[['income']])
+
+# 📌 Step 7 Apply K-Means on Scaled Data
+km = KMeans(n_clusters=3)
+y_scaled_pred = km.fit_predict(df[['AGE', 'INCOME']])
+df['cluster'] = y_scaled_pred
+
+# 📌 Step 8 Visualize Clusters (Scaled)
+plt.figure(figsize=(6, 4))
+for i in range(3)
+    plt.scatter(df[df.cluster == i]['AGE'], df[df.cluster == i]['INCOME'], label=f'Cluster {i}')
+# plot cluster centers
+plt.scatter(km.cluster_centers_[, 0], km.cluster_centers_[, 1], color='black', marker='D', label='Centroids')
+plt.xlabel('AGE (scaled)')
+plt.ylabel('INCOME (scaled)')
+plt.title('Clusters on Scaled Data')
+plt.legend()
+plt.show()
+
+# 📌 Step 9 Predict Cluster for New Input (age=34, income=50000)
+scaled_age = scaler.transform([[34]])[0][0]
+scaled_income = scaler.transform([[50000]])[0][0]
+prediction = km.predict([[scaled_age, scaled_income]])
+print(Predicted cluster for age=34 and income=50000, prediction[0])
+
+# 📌 Step 10 Elbow Method to Choose Optimal K
+sse = []
+k_range = range(1, 10)
+for k in k_range
+    km_elbow = KMeans(n_clusters=k)
+    km_elbow.fit(df[['AGE', 'INCOME']])
+    sse.append(km_elbow.inertia_)
+
+plt.figure(figsize=(6, 4))
+plt.plot(k_range, sse, marker='o')
+plt.xlabel('Number of Clusters (K)')
+plt.ylabel('SSE (Inertia)')
+plt.title('Elbow Method for Optimal K')
+plt.grid(True)
+plt.show()
